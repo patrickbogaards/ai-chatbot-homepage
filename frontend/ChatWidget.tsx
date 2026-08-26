@@ -56,11 +56,17 @@ export default function ChatWidget() {
   const [messages, setMessages] = useState<ChatMessage[]>([GREETING]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const latestBotReplyRef = useRef<HTMLDivElement>(null);
+  const shouldFocusLatestBotReply = useRef(false);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages, isOpen]);
+    if (!shouldFocusLatestBotReply.current) return;
+
+    // Lange Antworten beginnen direkt im sichtbaren Bereich. Besucher müssen
+    // dadurch nicht erst innerhalb des Chats nach oben scrollen.
+    latestBotReplyRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    shouldFocusLatestBotReply.current = false;
+  }, [messages]);
 
   useEffect(() => {
     // Auf dem Desktop reicht Platz, um den Chat direkt einladend zu öffnen.
@@ -105,6 +111,7 @@ export default function ChatWidget() {
         throw new Error('empty_reply');
       }
 
+      shouldFocusLatestBotReply.current = true;
       setMessages((prev) => [...prev, { role: 'model', text: data.reply }]);
     } catch {
       setMessages((prev) => [...prev, { role: 'model', text: FALLBACK_ERROR_TEXT }]);
@@ -144,6 +151,7 @@ export default function ChatWidget() {
             {messages.map((m, i) => (
               <div
                 key={i}
+                ref={i === messages.length - 1 && m.role === 'model' ? latestBotReplyRef : null}
                 className={`chat-widget-bubble ${m.role === 'user' ? 'chat-widget-bubble-user' : 'chat-widget-bubble-model'}`}
               >
                 <ChatMessageContent text={m.text} />
@@ -170,7 +178,6 @@ export default function ChatWidget() {
                 ))}
               </div>
             )}
-            <div ref={messagesEndRef} />
           </div>
 
           <form className="chat-widget-input-row" onSubmit={handleSubmit}>
@@ -218,4 +225,3 @@ export default function ChatWidget() {
     </div>
   );
 }
-
