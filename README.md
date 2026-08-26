@@ -6,14 +6,14 @@ Eigenständiger Gemini-Chat für eine Next.js-Homepage mit PHP-Backend. Dieses R
 
 - `frontend/ChatWidget.tsx` – React-/Next.js-Komponente
 - `frontend/chat-widget.css` – Navy-Gold-Design des Widgets
-- `frontend/chat-concierge-avatar.png` – menschlich wirkendes Avatarbild für den Chat
+- `chat-concierge-avatar.png` – menschlich wirkendes Avatarbild für den Chat
 - `backend/chat.php` – serverseitiger Gemini-Endpunkt mit Rate-Limit
 - `backend/chat-config.example.php` – Vorlage für die private Gemini-Konfiguration
 - `backend/.htaccess` und `backend/logs/.htaccess` – Schutz vor direktem Zugriff auf Konfiguration und Rate-Limit-Datei
 
 ## Einbau
 
-1. `ChatWidget.tsx` nach `src/components/` und `chat-concierge-avatar.png` nach `public/images/` kopieren.
+1. `frontend/ChatWidget.tsx` nach `src/components/` und `chat-concierge-avatar.png` nach `public/images/` kopieren.
 2. Die Regeln aus `chat-widget.css` in die globale CSS-Datei übernehmen. Die Datei verwendet die vorhandenen CSS-Variablen `--primary-color`, `--secondary-color`, `--accent-color`, `--accent-hover`, `--surface-color`, `--bg-color`, `--text-primary`, `--text-secondary` und `--text-light`.
 3. `ChatWidget` in das Layout einbinden, zum Beispiel `<ChatWidget />`.
 4. Die Dateien aus `backend/` in das Web-Stammverzeichnis eines PHP-fähigen Hostings kopieren.
