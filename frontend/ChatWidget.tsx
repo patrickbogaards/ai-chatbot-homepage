@@ -12,7 +12,7 @@ interface ChatMessage {
 
 const GREETING: ChatMessage = {
   role: 'model',
-  text: 'Guten Tag! Ich bin der digitale Assistent von Patrick Bogaards. Ich beantworte gerne erste allgemeine Fragen zu Versicherungen und den angebotenen Leistungen.',
+  text: 'Guten Tag! Ich bin Clara, die digitale Versicherungsassistenz von Patrick Bogaards. Ich beantworte gerne erste allgemeine Fragen zu Versicherungen und den angebotenen Leistungen.',
 };
 
 const QUICK_SUGGESTIONS = [
@@ -142,7 +142,7 @@ export default function ChatWidget() {
                 />
               </span>
               <span>
-                <strong>Versicherungs-Concierge</strong>
+                <strong>Clara</strong>
                 <small>Erste Orientierung – persönlich, klar, unverbindlich</small>
               </span>
             </div>
