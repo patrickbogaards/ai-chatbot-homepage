@@ -102,11 +102,17 @@
   height: 34px;
   border: 1px solid rgba(212, 175, 55, 0.7);
   border-radius: 50%;
-  color: var(--accent-color);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   background: rgba(255, 255, 255, 0.04);
+  overflow: hidden;
+}
+
+.chat-widget-avatar-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .chat-widget-close {
@@ -332,4 +338,3 @@
     align-self: flex-end;
   }
 }
-
