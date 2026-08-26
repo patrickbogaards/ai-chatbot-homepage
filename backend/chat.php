@@ -177,9 +177,10 @@ $payload = [
     'contents' => $contents,
     'generationConfig' => [
         'temperature' => 0.6,
-        'maxOutputTokens' => 1024,
-        // Deckel gegen unnötig lange (und teure) interne "Denk"-Phasen des Modells.
-        'thinkingConfig' => ['thinkingBudget' => 512],
+        // Ausreichend Raum für vollständige, ausführlichere Antworten.
+        'maxOutputTokens' => 2048,
+        // Ein kleiner Denkrahmen lässt mehr Budget für den sichtbaren Text.
+        'thinkingConfig' => ['thinkingBudget' => 256],
     ],
 ];
 
@@ -220,14 +221,27 @@ if ($http_code !== 200) {
     exit();
 }
 
-$reply = $data['candidates'][0]['content']['parts'][0]['text'] ?? null;
+$candidate = $data['candidates'][0] ?? [];
+$reply_parts = $candidate['content']['parts'] ?? [];
+$reply = '';
+foreach ($reply_parts as $part) {
+    if (isset($part['text']) && is_string($part['text'])) {
+        $reply .= $part['text'];
+    }
+}
 
-if ($reply === null) {
-    $finish_reason = $data['candidates'][0]['finishReason'] ?? 'unknown';
+if ($reply === '') {
+    $finish_reason = $candidate['finishReason'] ?? 'unknown';
     error_log('Gemini API: no reply text, finishReason=' . $finish_reason);
     http_response_code(502);
     echo json_encode(['error' => 'empty_reply']);
     exit();
+}
+
+// Falls der Anbieter trotz des größeren Budgets wegen einer Längenbegrenzung
+// stoppt, ist für den Besucher klar, dass eine persönliche Einordnung sinnvoll ist.
+if (($candidate['finishReason'] ?? '') === 'MAX_TOKENS') {
+    $reply .= "\n\nFür eine vollständige Einordnung besprechen wir Ihr Anliegen gerne persönlich: beratung@bogaards.at";
 }
 
 echo json_encode(['reply' => $reply]);
