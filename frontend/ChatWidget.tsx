@@ -1,8 +1,9 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
-import { Bot, MessageCircle, Send, ShieldCheck, X } from 'lucide-react';
+import { MessageCircle, Send, ShieldCheck, X } from 'lucide-react';
 
 interface ChatMessage {
   role: 'user' | 'model';
@@ -131,7 +132,15 @@ export default function ChatWidget() {
         <section className="chat-widget-panel" aria-label="KI-Chat für Versicherungsfragen">
           <div className="chat-widget-header">
             <div className="chat-widget-title-group">
-              <span className="chat-widget-avatar" aria-hidden="true"><Bot size={20} /></span>
+              <span className="chat-widget-avatar" aria-hidden="true">
+                <Image
+                  className="chat-widget-avatar-image"
+                  src="/images/chat-concierge-avatar.png"
+                  alt=""
+                  width={34}
+                  height={34}
+                />
+              </span>
               <span>
                 <strong>Versicherungs-Concierge</strong>
                 <small>Erste Orientierung – persönlich, klar, unverbindlich</small>
