@@ -183,20 +183,25 @@ PROMPT;
 $contents = $history;
 $contents[] = ['role' => 'user', 'parts' => [['text' => $message]]];
 
+$model = $config['gemini_model'] ?? 'gemini-2.5-flash';
+$api_key = $config['gemini_api_key'] ?? '';
+
+// Gemini 2.5 nutzt weiterhin den numerischen Denkrahmen. Gemini 3 und spätere
+// Modellreihen erwarten dagegen thinkingLevel statt thinkingBudget. Dadurch
+// bleibt Clara sowohl mit dem aktuellen als auch mit zukünftigen Modellen nutzbar.
+$thinking_config = preg_match('/^gemini-(?:[3-9]|[1-9][0-9])(?:[.-]|$)/', $model)
+    ? ['thinkingLevel' => 'low']
+    : ['thinkingBudget' => 256];
+
 $payload = [
     'system_instruction' => ['parts' => [['text' => $system_prompt]]],
     'contents' => $contents,
     'generationConfig' => [
-        'temperature' => 0.6,
         // Ausreichend Raum für vollständige, ausführlichere Antworten.
         'maxOutputTokens' => 2048,
-        // Ein kleiner Denkrahmen lässt mehr Budget für den sichtbaren Text.
-        'thinkingConfig' => ['thinkingBudget' => 256],
+        'thinkingConfig' => $thinking_config,
     ],
 ];
-
-$model = $config['gemini_model'] ?? 'gemini-2.5-flash';
-$api_key = $config['gemini_api_key'] ?? '';
 
 $url = "https://generativelanguage.googleapis.com/v1beta/models/{$model}:generateContent";
 
